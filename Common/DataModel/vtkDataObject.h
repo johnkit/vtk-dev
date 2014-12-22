@@ -351,6 +351,11 @@ public:
   // \ingroup InformationKeys
   static vtkInformationDataObjectKey* SIL();
 
+  // Key used to put GDAL map projection string in the output information
+  // by readers.
+  // \ingroup Information Keys
+  static vtkInformationStringKey* MAP_PROJECTION();
+
   //BTX
   // Description:
   // Retrieve an instance of this class from an information object.
