@@ -11,7 +11,7 @@ def load_geojson(input_string, feature_properties={}):
   to attach as cell data in the returned vtkPolyData.
   '''
   reader = vtk.vtkGeoJSONReader()
-  reader.StringInputModeOn()
+  reader.SetInputModeToString()
   reader.SetStringInput(input_string)
   for name,default_value in feature_properties.items():
     reader.AddFeatureProperty(name, default_value)

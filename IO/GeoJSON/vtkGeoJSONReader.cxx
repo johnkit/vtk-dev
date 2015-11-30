@@ -373,7 +373,8 @@ vtkGeoJSONReader::vtkGeoJSONReader()
 {
   this->FileName = NULL;
   this->StringInput = NULL;
-  this->StringInputMode = false;
+  this->JsonInput = NULL;
+  this->InputMode = vtkGeoJSONReader::INPUT_FILE;
   this->TriangulatePolygons = false;
   this->OutlinePolygons = false;
   this->SerializedPropertiesArrayName = NULL;
@@ -430,18 +431,29 @@ int vtkGeoJSONReader::RequestData(vtkInformation* vtkNotUsed(request),
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   // Get the ouptut
-  vtkPolyData* output = vtkPolyData::SafeDownCast(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+  vtkPolyData* output = vtkPolyData::SafeDownCast(
+    outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
   // Parse either string input of file, depeding on mode
   Json::Value root;
   int parseResult = 0;
-  if (this->StringInputMode)
+  switch (this->InputMode)
     {
-    parseResult = this->Internal->CanParseString(this->StringInput, root);
-    }
-  else
-    {
-    parseResult = this->Internal->CanParseFile(this->FileName, root);
+    case vtkGeoJSONReader::INPUT_STRING:
+      parseResult = this->Internal->CanParseString(this->StringInput, root);
+      break;
+
+    case vtkGeoJSONReader::INPUT_JSON:
+      if (this->JsonInput)
+        {
+        root = *this->JsonInput;
+        parseResult = VTK_OK;
+        }
+      break;
+
+    case vtkGeoJSONReader::INPUT_FILE:
+    default:
+      parseResult = this->Internal->CanParseFile(this->FileName, root);
     }
 
   if (parseResult != VTK_OK)

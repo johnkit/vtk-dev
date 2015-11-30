@@ -25,6 +25,10 @@
 #include "vtkPolyDataAlgorithm.h"
 
 class vtkPolyData;
+namespace Json
+{
+  class Value;
+}
 
 class VTKIOGEOJSON_EXPORT vtkGeoJSONReader: public vtkPolyDataAlgorithm
 {
@@ -44,11 +48,22 @@ public:
   vtkGetStringMacro(StringInput);
 
   // Description:
-  // Set/get whether to use StringInput instead of reading input from file
-  // The default is off
-  vtkSetMacro(StringInputMode, bool);
-  vtkGetMacro(StringInputMode, bool);
-  vtkBooleanMacro(StringInputMode, bool);
+  // Set/get the Input Mode that will be used by when the Update() method is called.
+  // The only valid enumbs are vtkGeoJsonReader::INPUT_FILE, INPUT_STRING, INPUT_JSON.
+  // The default is INPUT_FILE.
+  vtkSetMacro(InputMode, int);
+  vtkGetMacro(InputMode, int);
+  void SetInputModeToFile()
+    {this->SetInputMode(vtkGeoJSONReader::INPUT_FILE);};
+  void SetInputModeToString()
+    {this->SetInputMode(vtkGeoJSONReader::INPUT_STRING);};
+  void SetInputModeToJson()
+    {this->SetInputMode(vtkGeoJSONReader::INPUT_JSON);};
+  void StringInputModeOn()  // legacy
+    {
+    vtkWarningMacro("This method is DEPRECATED; use SetInputModeToString() instead");
+    this->SetInputModeToString();
+    }
 
   // Description
   // Set/get whether to convert all output polygons to triangles.
@@ -78,6 +93,13 @@ public:
   // Note that defaultValue specifies both type & value
   void AddFeatureProperty(const char *name, vtkVariant& typeAndDefaultValue);
 
+  enum
+  {
+    INPUT_FILE = 0,
+    INPUT_STRING,
+    INPUT_JSON
+  };
+
 protected:
   vtkGeoJSONReader();
   virtual ~vtkGeoJSONReader();
@@ -88,7 +110,8 @@ protected:
                   vtkInformationVector* outputVector);
   char *FileName;
   char *StringInput;
-  bool StringInputMode;
+  Json::Value *JsonInput;
+  int  InputMode;
   bool TriangulatePolygons;
   bool OutlinePolygons;
   char *SerializedPropertiesArrayName;
