@@ -38,18 +38,22 @@ public:
   virtual void PrintSelf(ostream &os, vtkIndent indent);
 
   // Decription:
-  // Accessor for name of the file that will be opened on WriteData
+  // File used as data input when Input Mode is INPUT_FILE
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
 
   // Description:
-  // String used as data input (instead of file) when StringInputMode is enabled
+  // String used as data input when InputMode is INPUT_STRING
   vtkSetStringMacro(StringInput);
   vtkGetStringMacro(StringInput);
 
   // Description:
+  // Json::Value used as data input when InputMode is INPUT_JSON
+  void SetJsonInput(Json::Value *value);
+
+  // Description:
   // Set/get the Input Mode that will be used by when the Update() method is called.
-  // The only valid enumbs are vtkGeoJsonReader::INPUT_FILE, INPUT_STRING, INPUT_JSON.
+  // The only valid enums are vtkGeoJSONReader::INPUT_FILE, INPUT_STRING, INPUT_JSON.
   // The default is INPUT_FILE.
   vtkSetMacro(InputMode, int);
   vtkGetMacro(InputMode, int);

@@ -392,6 +392,12 @@ vtkGeoJSONReader::~vtkGeoJSONReader()
 }
 
 //----------------------------------------------------------------------------
+void vtkGeoJSONReader::SetJsonInput(Json::Value *value)
+{
+  this->JsonInput = value;
+}
+
+//----------------------------------------------------------------------------
 void vtkGeoJSONReader::
 AddFeatureProperty(const char *name, vtkVariant& typeAndDefaultValue)
 {
